@@ -15,7 +15,7 @@
  * or a page over budget.
  */
 import { execFileSync } from "node:child_process";
-import { mkdirSync, readFileSync, readdirSync, rmSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { gzipSync } from "node:zlib";
 import { parseArgs } from "node:util";
@@ -43,6 +43,22 @@ const fail = (m) => { failures.push(m); console.log("✗ " + m); };
 if (!values["no-build"]) {
   console.log("building…");
   execFileSync("pnpm", ["exec", "vite", "build", "--logLevel", "error"], { cwd: ROOT, stdio: "inherit", env: { ...process.env, BLOG_DRAFTS: "1" } });
+}
+
+/* the feed (READ-6): built, well-formed, and listing every published post */
+{
+  const rss = join(ROOT, "dist", "rss.xml");
+  if (!existsSync(rss)) fail("no dist/rss.xml (READ-6)");
+  else {
+    const xml = readFileSync(rss, "utf8");
+    try { execFileSync("xmllint", ["--noout", rss], { stdio: "pipe" }); } catch (e) {
+      if (e.code !== "ENOENT") fail(`rss.xml is not well-formed: ${String(e.stderr ?? e).split("\n")[0]} (READ-6)`);
+    }
+    for (const s of readdirSync(join(ROOT, "posts")).filter((s) => s !== "specimen")) {
+      if (!xml.includes(`/posts/${s}/</link>`)) fail(`rss.xml has no item for posts/${s} (READ-6)`);
+    }
+    if (xml.includes("/posts/specimen/")) fail("rss.xml lists the specimen, a reference page (ARCH-7)");
+  }
 }
 
 /* budgets: the page's own JS and CSS from the build, gzipped (ARCH-4) */

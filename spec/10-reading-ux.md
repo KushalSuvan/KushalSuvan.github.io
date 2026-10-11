@@ -29,4 +29,6 @@ Every heading, figure, plot and scrolly step has an `id`. Loading a URL with a s
 
 ## READ-6 · Social and feeds
 
-The social image is the hero figure's rest pose on paper, with the title in sans 600 beside it (planned, status.md). The RSS feed carries full text with each exhibit's static form (`A11Y-6`).
+The social image is the hero figure's rest pose on paper, with the title in sans 600 beside it (planned, status.md).
+
+The RSS feed is `/rss.xml`, generated at build time from the posts themselves by `scripts/feed.mjs`, so it cannot disagree with the site. Every page names it in `<head>` (`<link rel="alternate" type="application/rss+xml">`) and links it in the header. Each item is the post's full text, rewritten for a reader that runs no script and loads no stylesheet: an interactive figure becomes a link to it on the site, with its caption kept; a token-heat figure keeps its text and links to its coloured version; a sidenote goes inline in parentheses; every link is absolute. A post's date comes from its meta line's `<time datetime>`. Reference pages are never in it. `pnpm look` checks the feed is well-formed and lists every published post.

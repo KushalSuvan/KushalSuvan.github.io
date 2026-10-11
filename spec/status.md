@@ -30,6 +30,7 @@ What enforces each rule today, and what is still planned. Update this file in th
 | LAY-5 | Any layout shift on load, with the elements that moved |
 | ARCH-4 | JS, CSS and font bytes over budget, naming the font files that loaded |
 | FIG-4 | Missing captions and figure numbers out of order, in the rendered page |
+| READ-6 | A missing or malformed `rss.xml`, a published post missing from it, or a reference page in it |
 | P-7 | Console errors and warnings, page errors, in every picture |
 
 ## Built into the engine
@@ -51,6 +52,6 @@ Everything in [checklist.md](checklist.md), from the screenshots.
 | CMP-1 | Highlighting at build time. Today a small in-browser highlighter covers ts, go, sql and sh. |
 | CMP-6 | KaTeX at build time. Today display formulas are Unicode in `.eq`. |
 | CMP-7 | Hover previews of cross-referenced exhibits. The flash on arrival works. |
-| READ-6 | Social images from the hero's rest pose; the RSS feed (not linked until it exists). |
+| READ-6 | Social images from the hero's rest pose. (The RSS feed is built: `/rss.xml`.) |
 | READ-4 | The archive link (the index is the only list of posts so far). |
 | FIG-6 | More explainer figures. `doubt` is the first real one; `gem` and `stack` are placeholders from the prototype. New ones follow hairline's `hairline-create` rules and FIG-1. |

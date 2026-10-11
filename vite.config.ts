@@ -1,6 +1,7 @@
 import { readdirSync } from "node:fs";
 import { resolve } from "node:path";
 import { defineConfig, type Plugin } from "vite";
+import { feed } from "./scripts/feed.mjs";
 
 /**
  * Every page: the index and posts/<slug>/index.html (ARCH-2). Reference pages
@@ -28,7 +29,16 @@ const preloadFonts = (): Plugin => ({
   },
 });
 
+/** The RSS feed, from the posts themselves (READ-6). */
+const rss = (): Plugin => ({
+  name: "rss",
+  apply: "build",
+  generateBundle() {
+    this.emitFile({ type: "asset", fileName: "rss.xml", source: feed(import.meta.dirname) });
+  },
+});
+
 export default defineConfig({
-  plugins: [preloadFonts()],
+  plugins: [preloadFonts(), rss()],
   build: { rollupOptions: { input: { index: resolve(import.meta.dirname, "index.html"), ...posts } } },
 });

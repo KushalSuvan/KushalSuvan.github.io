@@ -32,6 +32,7 @@ scripts/check.mjs         static rule checks
 scripts/look.mjs          screenshots and runtime checks
 scripts/same.mjs          compares two sets of screenshots (ARCH-6)
 scripts/tokens.mjs        token heat markup from a data file (PLOT-9)
+scripts/feed.mjs          the RSS feed, emitted by the build as /rss.xml (READ-6)
 vite.config.ts            the pages, and the plugin that preloads the four Latin fonts
 ```
 
