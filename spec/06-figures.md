@@ -48,4 +48,6 @@ When what a figure shows is text a machine writes (tokens, log lines, a query), 
 
 Uncertainty is drawn with the ink weights, never with blur, opacity or filters: rivals set over the chosen text in fainter weights, offset by how uncertain it is, and a dashed (`dash`) outline for what is not yet decided. The example is `src/figures/doubt.ts`.
 
+A figure that changes faster than the 260ms stroke fade (a sampler flickering every 120ms) turns the fade off for its own drawing in `exhibits.css`, so each state is drawn whole.
+
 - **Rejected when:** text names a shape in the drawing (that is a label, and labels belong to scenes); a fuzzy look comes from `filter`, `opacity` or `text-shadow`; the text is too dense to read at the narrow width (judge `ex-narrow-*`).

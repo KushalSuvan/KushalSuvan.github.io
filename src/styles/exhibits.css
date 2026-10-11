@@ -111,6 +111,9 @@ input[type="range"]:focus-visible { outline: 1.5px solid var(--ink); outline-off
   white-space: nowrap;
 }
 
+/* a figure that changes faster than the 260ms stroke fade would never finish one: it switches cleanly */
+:where([data-hairline="doubt"]) svg :where(path, ellipse) { transition: none; }
+
 /* the token being decided, over its rivals in fainter ink */
 .ft.next { font-weight: 600; }
 .ft.ghost { color: var(--ink-3); }

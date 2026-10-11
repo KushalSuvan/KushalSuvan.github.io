@@ -12,7 +12,7 @@ export type FigureEntry = { mount: FigureMount; label: string; range: readonly [
 export const FIGURES: Record<string, FigureEntry> = {
   doubt: {
     mount: doubt,
-    label: "A row of tokens a language model has written and a dashed slot for the next one, which flickers between candidates. Beside it, the logit layer: a field of pillars, one per token, as tall as its probability. The pointer over a pillar holds that token in the slot.",
+    label: "A row of tokens a language model has written and a dashed slot for the next one, which flickers between candidates. Beside it, the logit layer: a column of neurons, one per token, each with a bar as long as its probability.",
     range: [0.35, 1, 2.2], // temperature
   },
   gem: {
