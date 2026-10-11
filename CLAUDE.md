@@ -1,10 +1,11 @@
 # Blog
 
-A technical blog about systems, drawn in hairline's line language: isometric line figures, a scrolly canvas for system diagrams, and plots, all from one set of tokens.
+A research blog, a series on metacognition and doubt in language models, drawn in hairline's line language: line figures, token heat, a scrolly canvas and plots, all from one set of tokens. This repo is public and deploys to https://kushalsuvan.github.io/.
 
 ## Before you make or change anything
 
-Read `spec/README.md`. It is the source of truth and routes you to the chapters you need. Do not rely on memory of the spec; read the rules for the exhibit you are making each time.
+1. Read `.private/OPERATING.md`: who does what (Kushal writes the words; you build what he asks, exactly that), where the repos, accounts and vault are, how research becomes a post, how to publish and seal it, and the traps already found. It is local only and never committed, because this repo is public; if it is missing, ask Kushal for it.
+2. Read `spec/README.md`: the design spec's index. Read the chapters for the exhibit you are making each time; do not rely on memory of them.
 
 ## The loop
 

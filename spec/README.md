@@ -1,6 +1,6 @@
 # Blog spec
 
-The single source of truth for how this blog looks, moves and reads. It is written for whoever makes content here, human or agent. Read this file first, then the chapters your work touches.
+The single source of truth for how this blog looks, moves and reads. It is written for whoever makes content here, human or agent. A new session reads `.private/OPERATING.md` first (local only: roles, repos, publishing, known traps), then this file, then the chapters its work touches.
 
 The look descends from [hairline](https://github.com/lucasmarkes/hairline) (MIT, vendored unchanged in `src/hairline/`): isometric line drawings in one stroke and four ink weights, plates filled with the paper colour, motion on two clocks. This spec extends that language from ornament to a technical blog: prose, code, system diagrams that move with the text, and plots.
 
@@ -28,7 +28,7 @@ The look descends from [hairline](https://github.com/lucasmarkes/hairline) (MIT,
 | 09 | [components](09-components.md) | Code, sidenotes, callouts, tables, math, cross-references |
 | 10 | [reading UX](10-reading-ux.md) | Post anatomy, navigation, index, end of post |
 | 11 | [accessibility](11-accessibility.md) | Contrast, keyboard, screen readers, reduced motion, print, RSS |
-| 12 | [architecture](12-architecture.md) | Files, custom elements, budgets, the check and look scripts |
+| 12 | [architecture](12-architecture.md) | Files, custom elements, budgets, the check and look scripts, publishing, cleanup |
 | — | [checklist.md](checklist.md) | What to answer before a post ships |
 | — | [status.md](status.md) | Which rules the code enforces today, and which are still planned |
 

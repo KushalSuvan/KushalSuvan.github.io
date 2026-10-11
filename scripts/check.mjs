@@ -9,6 +9,7 @@
  * and exits 1. No dependencies: the posts are read with patterns, not a parser,
  * so keep their markup plain.
  */
+import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { join, relative, resolve } from "node:path";
@@ -38,9 +39,13 @@ for (const line of read(join(SRC, "hairline", "SHA256SUMS")).trim().split("\n"))
   else if (createHash("sha256").update(readFileSync(f)).digest("hex") !== sum) flag(f, 1, "ARCH-2", "src/hairline/ is vendored and never edited: extend it in src/engine/ instead");
 }
 
-/* ARCH-7: nothing public names the private research repository's paths */
-for (const f of [...walk(join(ROOT, "data"), [".json"]), ...walk(join(ROOT, "posts"), [".html"]), join(ROOT, "index.html")]) {
-  each(f, read(f), /(?:~|\/home\/[\w.-]+)\/res\/|res\/meta\b/g, (m, l) => flag(f, l, "ARCH-7", `"${m[0]}" points into the private research repo: keep provenance generic`));
+/* ARCH-7: nothing tracked, so nothing public, names the private research repository, its paths or its account */
+const PRIVATE = /(?:~|\/home\/[\w.-]+)\/res\/|res\/meta\b|meta-research|ZephyrousChimes|\.proof-vault\/[\w-]+/g;
+const tracked = execFileSync("git", ["ls-files", "-z"], { cwd: ROOT, encoding: "utf8" }).split("\0").filter(Boolean)
+  .filter((f) => !f.endsWith("scripts/check.mjs") && /\.(html|json|md|ts|mjs|css|yml)$/.test(f));
+for (const rel of tracked) {
+  const f = join(ROOT, rel);
+  if (existsSync(f)) each(f, read(f), PRIVATE, (m, l) => flag(f, l, "ARCH-7", `"${m[0]}" names something private, and this repo is public: keep it in .private/`));
 }
 
 /* TOK-1: colours only in tokens.css */

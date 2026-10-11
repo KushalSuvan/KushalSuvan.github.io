@@ -94,6 +94,6 @@ Behaviour changes found during a pass (a bug, a better rule) are noted and done 
 The site is published to GitHub Pages from the public repo `KushalSuvan/KushalSuvan.github.io` by `.github/workflows/deploy.yml` on every push to `main`: `pnpm install --frozen-lockfile`, `pnpm check`, `pnpm build`, upload `dist/`.
 
 - **Reference pages are never published.** `posts/specimen/` is built only with `BLOG_DRAFTS=1`, which `pnpm look` sets; the production build leaves it out, and the index does not list it.
-- **Nothing private.** Data files say where a run came from only as "the private research repository"; paths, notebook names and experiment IDs stay in the sealed vault (`proof`). `pnpm check` fails on a path into the research repo.
+- **Nothing private.** This repo is public. Data files say where a run came from only as "the private research repository"; paths, notebook names, experiment IDs, the research repo's name and its account stay private. `pnpm check` scans every tracked file and fails on them. Notes that need them live in `.private/` (git-ignored).
 - **No dead links.** A link to something not yet built (the feed, a mail address) is left out, not stubbed.
 
