@@ -277,9 +277,19 @@ table,
   .toc.hidden { visibility: hidden; }
 }
 
-/* ---------- the index (READ-4) ---------- */
+/* ---------- the index (READ-4): no title, only the series and their parts ---------- */
 
-.index { list-style: none; padding: 0; margin-top: var(--s-7); }
+.post > .series-group { margin-top: var(--s-8); }
+.post > .series-group + .series-group { margin-top: var(--s-9); }
+
+.series-label {
+  font: 400 0.75rem/1.4 var(--font-mono);
+  letter-spacing: 0.04em;
+  color: var(--ink-3);
+  margin: 0 0 var(--s-3);
+}
+
+.post .index { list-style: none; padding: 0; margin: 0; } /* .post ol pads lists; the index is not one */
 .index li + li { margin-top: 0; }
 
 .index a {

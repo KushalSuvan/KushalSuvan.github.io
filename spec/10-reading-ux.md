@@ -21,7 +21,7 @@ From 85rem (1360px), for posts with three or more `h2`s, a TOC sits fixed left o
 
 ## READ-4 · The index page
 
-A list, newest first: date (mono, tabular, `--ink-3`), title (sans 600), dek (serif `--ink-2`), and each post's hero figure at rest, 160px wide, at the right. Hovering a row lets its figure answer the pointer. No pagination under 50 posts; then by year.
+No title and no dek: the page is the series. Each series is a group, newest series first, under its name as a small mono label (`doubt`), and its parts follow, newest first. A visually hidden `h1` names the site for screen readers. Each part is a row: date (mono, tabular, `--ink-3`), title (sans 600), dek (serif `--ink-2`), and each post's hero figure at rest, 160px wide, at the right. Hovering a row lets its figure answer the pointer. No pagination under 50 posts; then by year.
 
 ## READ-5 · Deep links
 
