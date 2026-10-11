@@ -1,0 +1,95 @@
+/*
+ * Every token (spec/01-tokens.md). The only file in the project with a colour in it.
+ * Light by default; dark from the system unless data-theme="light", and always under data-theme="dark".
+ */
+
+:root {
+  color-scheme: light;
+
+  /* paper and ink (TOK-2) */
+  --paper: #ffffff;
+  --paper-2: #f7f7f8;
+  --ink: #232327;
+  --ink-2: #5f5f68;
+  --ink-3: #8a8a93;
+  --ink-mid: #c3c3c9;
+  --ink-lo: #e0e0e4;
+  /* the one hue (TOK-4), and the same hue as a scale for one quantity (TOK-4, PLOT-9) */
+  --signal: #c4391d;
+  --heat: #c4391d;
+  --heat-max: 85%;
+
+  /* hairline's theme, mapped onto ours */
+  --hairline-plate: var(--paper);
+  --hairline-hi: var(--ink);
+  --hairline-edge: var(--ink-3);
+  --hairline-mid: var(--ink-mid);
+  --hairline-lo: var(--ink-lo);
+  --hairline-stroke: 0.9;
+
+  /* type (TYPE-1) */
+  --font-text: "Source Serif 4 Variable", "Source Serif Pro", Georgia, serif;
+  --font-ui: "Inter Variable", Inter, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono Variable", "JetBrains Mono", ui-monospace, Menlo, monospace;
+
+  /* spacing (TOK-5) */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 24px;
+  --s-6: 32px;
+  --s-7: 48px;
+  --s-8: 64px;
+  --s-9: 96px;
+  --s-10: 128px;
+
+  /* radii (TOK-6) */
+  --radius-1: 4px;
+  --radius-2: 8px;
+
+  /* motion (TOK-7) */
+  --ease-lift: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-stroke: cubic-bezier(0.5, 0, 0.1, 1);
+  --dur-ui: 160ms;
+  --dur-stroke: 260ms;
+  --dur-lift: 700ms;
+
+  /* layout (LAY-1, LAY-2) */
+  --measure: 38rem;
+  --gutter: var(--s-4);
+}
+
+@media (min-width: 40rem) {
+  :root { --gutter: var(--s-5); }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --paper: #08090a;
+    --paper-2: #111214;
+    --ink: #d0d6e0;
+    --ink-2: #9a9ca4;
+    --ink-3: #6f717a;
+    --ink-mid: #3e3e44;
+    --ink-lo: #29292d;
+    --signal: #ff7a5c;
+    --heat: #a12d18;
+    --heat-max: 85%;
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --paper: #08090a;
+  --paper-2: #111214;
+  --ink: #d0d6e0;
+  --ink-2: #9a9ca4;
+  --ink-3: #6f717a;
+  --ink-mid: #3e3e44;
+  --ink-lo: #29292d;
+  --signal: #ff7a5c;
+  --heat: #a12d18;
+  --heat-max: 85%;
+}

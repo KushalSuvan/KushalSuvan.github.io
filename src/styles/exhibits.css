@@ -1,0 +1,347 @@
+/* Exhibits: the figure frame, <hl-figure>, <hl-plot> and the scrolly section (spec/06 – 08, LAY-6). */
+
+/* ---------- figure frame (FIG-3, FIG-4) ---------- */
+
+.fig { margin-top: var(--s-6); margin-bottom: 0; }
+.post > .fig + * { margin-top: var(--s-6); }
+.post > .fig.wide { margin-top: var(--s-7); }
+.post > .fig.wide + * { margin-top: var(--s-7); }
+
+figcaption {
+  font: 400 0.875rem/1.45 var(--font-ui);
+  color: var(--ink-2);
+  margin-top: var(--s-3);
+  text-wrap: pretty;
+}
+
+.fig-n {
+  font: 500 0.75rem/1 var(--font-mono);
+  color: var(--ink);
+  margin-right: 0.6em;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+.readout {
+  position: absolute;
+  top: var(--s-2);
+  right: 0;
+  font: 400 11.5px/1 var(--font-mono);
+  letter-spacing: 0.04em;
+  color: var(--ink-3);
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+/* ---------- <hl-figure> (FIG-3) ---------- */
+
+hl-figure { display: block; position: relative; }
+
+/* before the script defines the element, it already holds its box (LAY-5) */
+hl-figure:not(:defined),
+hl-plot:not(:defined) { box-sizing: content-box; aspect-ratio: 5 / 4; }
+hl-plot:not(:defined) { aspect-ratio: 4 / 3; }
+
+@media (min-width: 40rem) {
+  .wide hl-plot:not(:defined) { aspect-ratio: 16 / 9; }
+}
+hl-figure .hl-box { position: relative; aspect-ratio: 5 / 4; }
+hl-figure[control] { padding-bottom: 40px; }
+
+.hl-control {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  font: 400 11.5px/1 var(--font-mono);
+  letter-spacing: 0.04em;
+  color: var(--ink-2);
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+.hl-control label { white-space: nowrap; }
+.hl-control output { min-width: 6ch; color: var(--ink); }
+
+input[type="range"] {
+  flex: 1;
+  min-width: 0;
+  max-width: 16rem;
+  height: 20px;
+  margin: 0;
+  background: transparent;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-runnable-track { height: 1px; background: var(--ink-mid); }
+input[type="range"]::-moz-range-track { height: 1px; background: var(--ink-mid); }
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 11px;
+  height: 11px;
+  margin-top: -5px;
+  border-radius: 50%;
+  border: 1px solid var(--ink);
+  background: var(--paper);
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  border: 1px solid var(--ink);
+  background: var(--paper);
+}
+
+input[type="range"]:focus-visible { outline: 1.5px solid var(--ink); outline-offset: 4px; }
+
+/* ---------- text as a figure's subject (FIG-7) ---------- */
+
+.fig-text { position: absolute; inset: 0; pointer-events: none; }
+
+.ft {
+  position: absolute;
+  font: 450 12px/1.3 var(--font-mono);
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+/* the token being decided, over its rivals in fainter ink */
+.ft.next { font-weight: 600; }
+.ft.ghost { color: var(--ink-3); }
+.ft.ghost.far { color: var(--ink-mid); }
+
+/* ---------- <hl-plot> (PLOT-1, PLOT-2) ---------- */
+
+hl-plot { display: block; position: relative; }
+hl-plot .hl-box { position: relative; aspect-ratio: 4 / 3; }
+hl-plot[live] { padding-bottom: 40px; }
+
+@media (min-width: 40rem) {
+  .wide hl-plot .hl-box { aspect-ratio: 16 / 9; }
+}
+
+hl-plot svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+hl-plot path, hl-plot line, hl-plot circle { vector-effect: non-scaling-stroke; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+
+hl-plot .grid { stroke: var(--ink-lo); stroke-width: 1; }
+hl-plot .axis { stroke: var(--ink-mid); stroke-width: 1; }
+hl-plot .s-main { stroke: var(--ink); stroke-width: 1.5; }
+hl-plot .s-cmp { stroke: var(--ink-3); stroke-width: 1.25; }
+hl-plot .s-cmp2 { stroke: var(--ink-3); stroke-width: 1.25; stroke-dasharray: 4 4; }
+hl-plot .s-ref { stroke: var(--ink-mid); stroke-width: 1; stroke-dasharray: 1 3; }
+hl-plot .s-sig { stroke: var(--signal); stroke-width: 1.5; }
+hl-plot .lead { stroke: var(--ink-mid); stroke-width: 1; }
+hl-plot .rule { stroke: var(--ink-mid); stroke-width: 1; }
+hl-plot .dot { fill: var(--ink); stroke: var(--paper); stroke-width: 1.5; }
+hl-plot .dot.m { fill: var(--ink-3); }
+hl-plot .bar { fill: var(--paper); stroke: var(--ink-3); stroke-width: 1; }
+hl-plot .bar.hi { stroke: var(--ink); }
+
+hl-plot text {
+  font: 400 11.5px/1 var(--font-mono);
+  letter-spacing: 0.04em;
+  fill: var(--ink-3);
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+hl-plot text.lbl { fill: var(--ink-2); font-size: 12px; letter-spacing: 0; }
+hl-plot text.lbl.main { fill: var(--ink); font-weight: 600; }
+hl-plot text.ann { fill: var(--ink); font-size: 12px; letter-spacing: 0; }
+
+/* ---------- the scrolly section (LAY-6, spec/07) ---------- */
+
+hl-scrolly {
+  display: grid;
+  position: relative;
+}
+
+.post > hl-scrolly { margin-top: var(--s-8); }
+
+hl-scrolly:not(:defined) { padding-top: 55svh; }
+
+.scn-canvas {
+  position: sticky;
+  top: 0;
+  height: 55svh;
+  z-index: 1;
+  background: var(--paper);
+  border-bottom: 1px solid var(--ink-lo);
+  overflow: hidden;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.scn-stage {
+  position: absolute;
+  inset: 0;
+  aspect-ratio: auto;
+}
+
+.scn-stage > svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+.scn-labels { position: absolute; inset: 0; pointer-events: none; }
+
+.scn-label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  font: 450 12px/1.3 var(--font-mono);
+  color: var(--ink-2);
+  white-space: nowrap;
+  transition: color var(--dur-stroke) var(--ease-stroke);
+  will-change: transform;
+}
+
+.scn-label.focus { color: var(--ink); font-weight: 600; }
+.scn-label.zone { color: var(--ink-3); }
+.scn-label.sig { color: var(--signal); }
+
+.scn-canvas .readout { top: var(--s-4); left: var(--gutter); right: auto; }
+
+.scn-explore {
+  position: absolute;
+  right: var(--gutter);
+  bottom: var(--s-4);
+  font: 400 11.5px/1 var(--font-mono);
+  letter-spacing: 0.04em;
+  color: var(--ink-2);
+  background: var(--paper);
+  border: 1px solid var(--ink-mid);
+  border-radius: var(--radius-2);
+  padding: var(--s-2) var(--s-3);
+  cursor: pointer;
+  transition: color var(--dur-ui) var(--ease-stroke), border-color var(--dur-ui) var(--ease-stroke);
+}
+
+.scn-explore:hover { color: var(--ink); border-color: var(--ink-3); }
+
+.scn-canvas.exploring { cursor: grab; touch-action: none; }
+.scn-canvas.exploring.dragging { cursor: grabbing; }
+.scn-canvas.exploring .scn-explore { color: var(--ink); border-color: var(--ink); }
+
+.scn-steps { padding: 0 var(--gutter); }
+
+.step {
+  max-width: var(--measure);
+  margin: 0 auto 60svh;
+  padding: var(--s-4) var(--s-5);
+  background: var(--paper-2);
+  border: 1px solid var(--ink-lo);
+  border-radius: var(--radius-2);
+  position: relative;
+  z-index: 0;
+}
+
+.step:first-child { margin-top: 20svh; }
+.step:last-child { margin-bottom: 25svh; }
+.step p { margin: 0; text-wrap: pretty; }
+.step p + p { margin-top: 0.9em; }
+
+/* the scene's caption follows the section in the text column */
+.post > .scn-caption {
+  font: 400 0.875rem/1.45 var(--font-ui);
+  color: var(--ink-2);
+  margin-top: var(--s-3);
+}
+
+.post > .scn-caption + * { margin-top: var(--s-7); }
+
+@media (max-width: 63.99rem) {
+  .scn-canvas.exploring {
+    position: fixed;
+    inset: 0;
+    height: auto;
+    z-index: 50;
+  }
+}
+
+@media (min-width: 64rem) {
+  hl-scrolly {
+    grid-template-columns: [steps] minmax(20rem, 26rem) [canvas] 1fr;
+    column-gap: var(--s-7);
+    padding-left: max(var(--gutter), calc(50% - 27rem));
+    padding-right: var(--gutter);
+  }
+
+  hl-scrolly:not(:defined) { padding-top: 0; }
+
+  .scn-canvas {
+    grid-column: canvas;
+    grid-row: 1;
+    height: 100svh;
+    border-bottom: 0;
+  }
+
+  /* the world runs on past the canvas: fade the drawing at the sides instead of cutting it; the chrome stays sharp */
+  .scn-stage,
+  .scn-labels { mask-image: linear-gradient(to right, transparent, currentColor var(--s-7), currentColor calc(100% - var(--s-7)), transparent); }
+
+  .scn-steps { grid-column: steps; grid-row: 1; padding: 0; }
+
+  .step {
+    min-height: 85svh;
+    margin: 0;
+    padding: 0;
+    background: none;
+    border: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: var(--ink-2);
+    transition: color var(--dur-stroke) var(--ease-stroke);
+  }
+
+  .step:first-child { margin-top: 0; }
+  .step:last-child { margin-bottom: 0; }
+  .step.active { color: var(--ink); }
+
+}
+
+/* the scene's drawing: classes on top of hairline's (LINE-1, LINE-4) */
+.scn-stage svg .edge { fill: none; stroke: var(--ink-mid); }
+.scn-stage svg .edge.async { stroke-dasharray: 4 4; }
+.scn-stage svg .edge.repl { stroke-dasharray: 1 3; }
+.scn-stage svg .edge.on { stroke: var(--ink); }
+.scn-stage svg .sig, .scn-stage svg .edge.sig { stroke: var(--signal); }
+.scn-stage svg .dot.sig { fill: var(--signal); stroke: none; }
+.scn-stage svg .zone { fill: none; stroke: var(--ink-3); stroke-dasharray: 1 3; }
+
+/* ---------- token heat (PLOT-9) ---------- */
+
+.tokens {
+  font: 400 0.8125rem/2 var(--font-mono);
+  font-variant-ligatures: none;
+  overflow-wrap: anywhere;
+}
+
+@media (min-width: 40rem) {
+  .tokens { font-size: 0.875rem; }
+}
+
+.tokens p { margin: 0; }
+.tokens .tk-model { font-size: 11.5px; letter-spacing: 0.04em; color: var(--ink-3); margin-bottom: var(--s-2); }
+.tokens + .tokens { margin-top: var(--s-6); }
+/* a hanging indent: wrapped lines start under the text, not under the q and a */
+.tokens .tk-q, .tokens .tk-a { padding-left: 2ch; text-indent: -2ch; }
+.tokens .tk-passage { padding-left: 0; text-indent: 0; }
+.tokens .tk-q { color: var(--ink-2); margin-top: var(--s-3); }
+.tokens .tk-q:first-of-type { margin-top: 0; }
+.tokens .tk-a { color: var(--ink); white-space: pre-wrap; }
+.tokens .tk-label { display: inline-block; width: 2ch; text-indent: 0; color: var(--ink-3); font-size: 11.5px; }
+.tokens .tk-legend { margin-top: var(--s-4); font-size: 11.5px; letter-spacing: 0.04em; color: var(--ink-3); }
+.tokens .tk-legend .tk { padding: 0 0.6em; margin-left: 1px; color: var(--ink); }
+
+/* the heat: one hue mixed into paper by entropy, half a nat a step, 6 nats and over full */
+.tk { --h: 0; background: color-mix(in oklab, var(--heat) calc(var(--h) * var(--heat-max)), var(--paper)); border-radius: 2px; }
+.tk.h0 { background: none; }
+.tk.h1 { --h: 0.083; } .tk.h2 { --h: 0.167; } .tk.h3 { --h: 0.25; } .tk.h4 { --h: 0.333; }
+.tk.h5 { --h: 0.417; } .tk.h6 { --h: 0.5; } .tk.h7 { --h: 0.583; } .tk.h8 { --h: 0.667; }
+.tk.h9 { --h: 0.75; } .tk.h10 { --h: 0.833; } .tk.h11 { --h: 0.917; } .tk.h12 { --h: 1; }
+

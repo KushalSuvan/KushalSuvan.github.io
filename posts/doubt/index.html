@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>When is a model in doubt?</title>
+    <meta name="description" content="Two kinds of doubt, a way to measure one of them, and what the entropy of a single token does and does not tell you." />
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+    <script>try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}</script>
+    <script type="module" src="/src/main.ts"></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="site-name" href="/">kronos</a>
+      <nav class="site-nav" aria-label="Site">
+        <a href="/">archive</a>
+        <button type="button" data-theme-toggle>dark</button>
+      </nav>
+    </header>
+
+    <main class="post">
+      <header class="post-head">
+        <h1>When is a model in doubt?</h1>
+        <p class="dek">Two kinds of doubt, a way to measure one of them, and what the entropy of a single token does and does not tell you.</p>
+        <p class="meta"><time datetime="2026-10-08">8 Oct 2026</time> · 4 min</p>
+      </header>
+
+      <p>A language model states every answer in the same even tone. Nothing in the text says how sure it was. Our task: take one answer and score how much the model doubts it, as the probability the model itself puts on that answer being true.</p>
+
+      <p>This is not about right and wrong. A model taught a wrong fact can hold it with full confidence, and that is fine here; correctness is a separate question. We want the doubt, and only the doubt. That needs a definition first, because "doubt" covers more than one thing.</p>
+
+      <h2>Two kinds of doubt</h2>
+
+      <p><strong>A hunch that something is off.</strong> The answer does not sit well with everything else the model knows. Its general knowledge points the other way: the truth is <em>not that</em>, or <em>something different</em>. The answer breaks the logic the model has learnt, and the conflict is the doubt.</p>
+
+      <p><strong>Many roads, many answers.</strong> There is more than one way to reach an answer, and different ways land in different places. Here doubt is spread: ask again, or reason differently, and the answer moves.</p>
+
+      <p>The first is a question of coherence with what the model knows. The second is a question of variance in what it says. This post is about the second.</p>
+
+      <h2>Doubt as variance</h2>
+
+      <p>Variance is easy to compute for a number or a vector. An answer is neither. It is a phrase, often several tokens long, and two phrases can differ in every token and still mean the same thing: <code>Paris</code>, <code>the city of Paris</code>, <code>It's Paris.</code> What matters is <dfn>semantic variance</dfn>: how far apart the answers are in meaning, not in wording.</p>
+
+      <p>A probabilistic model helps here. Every answer it can give comes with a probability, its stake on that answer being true. The spread of a probability distribution has a standard measure, its entropy, so the variance we want is the <dfn>entropy of the answer</dfn>, taken over meanings <i>a</i>:<label class="sn-ref" for="sn-1"></label><input type="checkbox" id="sn-1" class="sn-toggle" /><span class="sn">The same idea appears in the literature as <em>semantic entropy</em> (Kuhn, Gal and Farquhar, 2023).</span></p>
+
+      <p class="eq">H = −Σ<sub>a</sub> p(a) log p(a)</p>
+
+      <p>One meaning with all the probability gives zero: no doubt. Probability shared across several meanings gives more, and the more evenly it is shared, the more doubt.</p>
+
+      <h2>A naive first attempt</h2>
+
+      <p>Meanings are expensive to enumerate. Tokens are not. At every step the model already holds a distribution over its next token, and the entropy of that distribution comes for free. So the first thing we tried was the obvious one: read doubt off the entropy of the token prediction.</p>
+
+      <figure class="fig" id="fig-1">
+        <hl-figure name="doubt" intensity="0.5" control="temperature"></hl-figure>
+        <figcaption><span class="fig-n">Fig 1</span>Each step is a draw from a distribution over tokens. The read-out is its entropy: the naive measure of doubt. Hover a pillar to hold that token.</figcaption>
+      </figure>
+
+      <p>The hope: if the model is unsure of an answer, the token where the answer begins should be a hard choice, and its entropy should show it. We tested that in two steps.</p>
+
+      <h2>What token entropy showed</h2>
+
+      <p><strong>Answer tokens do carry the entropy.</strong> Take a typical reply from Qwen2.5-1.5B-Instruct: <i>The director of the 2014 film "Pride" is Lee Chang-dong.</i> Every token of the wording sits below 1 nat. The two tokens of the name sit at 5.1 and 4.0. The model is sure how to say it, and unsure what to say.</p>
+
+      <figure class="fig" id="fig-2">
+        <div class="tokens">
+          <p class="tk-model">Qwen/Qwen2.5-1.5B-Instruct</p>
+          <p class="tk-q"><span class="tk-label">q</span>What is the capital of France? Answer in one sentence.</p>
+          <p class="tk-a"><span class="tk-label">a</span><span class="tk h0" title="0.09 nats">The</span><span class="tk h0" title="0.00 nats"> capital</span><span class="tk h0" title="0.00 nats"> of</span><span class="tk h0" title="0.00 nats"> France</span><span class="tk h0" title="0.00 nats"> is</span><span class="tk h0" title="0.00 nats"> Paris</span><span class="tk h0" title="0.01 nats">.</span></p>
+          <p class="tk-q"><span class="tk-label">q</span>Who was the director of the film Pride (2014)? Answer in one sentence.</p>
+          <p class="tk-a"><span class="tk-label">a</span><span class="tk h1" title="0.71 nats">The</span><span class="tk h2" title="0.81 nats"> director</span><span class="tk h0" title="0.00 nats"> of</span><span class="tk h0" title="0.11 nats"> the</span><span class="tk h1" title="0.60 nats"> </span><span class="tk h0" title="0.00 nats">2</span><span class="tk h0" title="0.00 nats">0</span><span class="tk h0" title="0.00 nats">1</span><span class="tk h0" title="0.01 nats">4</span><span class="tk h0" title="0.10 nats"> film</span><span class="tk h1" title="0.55 nats"> &quot;</span><span class="tk h0" title="0.02 nats">P</span><span class="tk h0" title="0.00 nats">ride</span><span class="tk h0" title="0.02 nats">&quot;</span><span class="tk h1" title="0.69 nats"> is</span><span class="tk h10" title="5.07 nats"> Lee</span><span class="tk h8" title="4.01 nats"> Chang</span><span class="tk h0" title="0.07 nats">-d</span><span class="tk h1" title="0.25 nats">ong</span><span class="tk h0" title="0.08 nats">.</span></p>
+          <p class="tk-q"><span class="tk-label">q</span>Who was the composer of The Trap? Answer in one sentence.</p>
+          <p class="tk-a"><span class="tk-label">a</span><span class="tk h2" title="0.92 nats">The</span><span class="tk h2" title="0.79 nats"> Trap</span><span class="tk h2" title="0.96 nats"> is</span><span class="tk h2" title="0.79 nats"> an</span><span class="tk h3" title="1.47 nats"> opera</span><span class="tk h3" title="1.53 nats"> composed</span><span class="tk h0" title="0.02 nats"> by</span><span class="tk h8" title="4.13 nats"> Gian</span><span class="tk h1" title="0.72 nats"> Carlo</span><span class="tk h0" title="0.03 nats"> Men</span><span class="tk h0" title="0.05 nats">otti</span><span class="tk h1" title="0.45 nats">.</span></p>
+          <p class="tk-legend">entropy, nats <span class="tk h0">0</span><span class="tk h2">1</span><span class="tk h4">2</span><span class="tk h6">3</span><span class="tk h8">4</span><span class="tk h10">5</span><span class="tk h12">6</span></p>
+        </div>
+        <figcaption><span class="fig-n">Fig 2</span>Each token tinted by its entropy as the model wrote it. The wording stays pale and the names run hot; Paris, which the model knows, stays pale too. Hover a token for its value.</figcaption>
+      </figure>
+
+      <p><strong>But high entropy does not mark an answer.</strong> In a long reasoning trace from DeepSeek-R1-Distill-Qwen-1.5B, working on a programming puzzle, tokens nearly as uncertain turn up where no answer is at stake. After <i>Wait, maybe I can</i>, the model splits between <code> have</code> (14%), <code> construct</code> (9%) and <code> try</code> (9%): 3.3 nats, close to the uncertain name. The options are synonymous possibilities, many tokens with one meaning. The entropy is real; the doubt is not.</p>
+
+      <figure class="fig" id="fig-3">
+        <div class="tokens">
+          <p class="tk-model">Qwen/Qwen2.5-1.5B-Instruct</p>
+          <p class="tk-q"><span class="tk-label">q</span>In two sentences, who was Gian Carlo Menotti and what is he known for?</p>
+          <p class="tk-a"><span class="tk-label">a</span><span class="tk h0" title="0.05 nats">G</span><span class="tk h0" title="0.00 nats">ian</span><span class="tk h0" title="0.01 nats"> Carlo</span><span class="tk h0" title="0.00 nats"> Men</span><span class="tk h0" title="0.00 nats">otti</span><span class="tk h1" title="0.73 nats"> (</span><span class="tk h0" title="0.19 nats">1</span><span class="tk h0" title="0.01 nats">9</span><span class="tk h0" title="0.09 nats">1</span><span class="tk h0" title="0.01 nats">1</span><span class="tk h1" title="0.29 nats">-</span><span class="tk h1" title="0.44 nats">2</span><span class="tk h0" title="0.00 nats">0</span><span class="tk h0" title="0.11 nats">0</span><span class="tk h0" title="0.07 nats">7</span><span class="tk h0" title="0.02 nats">)</span><span class="tk h0" title="0.05 nats"> was</span><span class="tk h1" title="0.25 nats"> an</span><span class="tk h1" title="0.51 nats"> Italian</span><span class="tk h1" title="0.59 nats">-American</span><span class="tk h2" title="1.13 nats"> opera</span><span class="tk h1" title="0.42 nats"> composer</span><span class="tk h3" title="1.35 nats"> and</span><span class="tk h4" title="2.11 nats"> lib</span><span class="tk h0" title="0.02 nats">rett</span><span class="tk h0" title="0.00 nats">ist</span><span class="tk h3" title="1.45 nats">.</span><span class="tk h1" title="0.35 nats"> He</span><span class="tk h0" title="0.22 nats"> is</span><span class="tk h2" title="1.01 nats"> best</span><span class="tk h0" title="0.02 nats"> known</span><span class="tk h0" title="0.05 nats"> for</span><span class="tk h3" title="1.37 nats"> his</span><span class="tk h6" title="3.24 nats"> oper</span><span class="tk h0" title="0.07 nats">as</span><span class="tk h4" title="1.85 nats"> &quot;</span><span class="tk h1" title="0.46 nats">The</span><span class="tk h10" title="5.20 nats"> P</span><span class="tk h7" title="3.55 nats">elle</span><span class="tk h0" title="0.01 nats">as</span><span class="tk h0" title="0.01 nats"> and</span><span class="tk h4" title="2.05 nats"> Mel</span><span class="tk h0" title="0.19 nats">is</span><span class="tk h0" title="0.08 nats">ande</span><span class="tk h2" title="1.14 nats">&quot;</span><span class="tk h1" title="0.70 nats"> and</span><span class="tk h0" title="0.08 nats"> &quot;</span><span class="tk h2" title="1.17 nats">Am</span><span class="tk h1" title="0.29 nats">ahl</span><span class="tk h0" title="0.02 nats"> and</span><span class="tk h0" title="0.01 nats"> the</span><span class="tk h0" title="0.10 nats"> Night</span><span class="tk h3" title="1.39 nats"> Visitors</span><span class="tk h2" title="0.79 nats">,&quot;</span><span class="tk h3" title="1.45 nats"> as</span><span class="tk h0" title="0.00 nats"> well</span><span class="tk h0" title="0.00 nats"> as</span><span class="tk h3" title="1.41 nats"> his</span><span class="tk h8" title="4.17 nats"> work</span><span class="tk h3" title="1.60 nats"> in</span><span class="tk h5" title="2.59 nats"> promoting</span><span class="tk h4" title="1.79 nats"> classical</span><span class="tk h0" title="0.03 nats"> music</span><span class="tk h4" title="1.76 nats"> through</span><span class="tk h6" title="3.10 nats"> various</span><span class="tk h5" title="2.41 nats"> initiatives</span><span class="tk h2" title="1.02 nats">.</span></p>
+        </div>
+        <div class="tokens">
+          <p class="tk-model">deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B</p>
+          <p class="tk-a tk-passage"><span class="tk h1" title="0.66 nats · Wait 77% · But 20% · So 2%">Wait</span><span class="tk h0" title="0.00 nats · , 100% · . 0% · but 0%">,</span><span class="tk h4" title="1.84 nats · but 48% · let 16% · for 12%"> but</span><span class="tk h5" title="2.37 nats · ␣ 37% · the 21% · let 6%"> </span><span class="tk h0" title="0.01 nats · 4 100% · 7 0% · 6 0%">4</span><span class="tk h1" title="0.64 nats · , 68% · 7 32% · million 0%">,</span><span class="tk h0" title="0.00 nats · 7 100% · 6 0% · ␣ 0%">7</span><span class="tk h1" title="0.29 nats · 6 92% · , 8% · is 0%">6</span><span class="tk h0" title="0.00 nats · 3 100% · , 0% · 4 0%">3</span><span class="tk h0" title="0.02 nats · , 100% · is 0% · 1 0%">,</span><span class="tk h0" title="0.06 nats · 1 99% · xxx 0% · 0 0%">1</span><span class="tk h1" title="0.44 nats · 0 93% · X 1% · xx 1%">0</span><span class="tk h1" title="0.33 nats · 8 92% · 0 8% · 1 0%">8</span><span class="tk h0" title="0.18 nats · is 97% · ends 1% · has 1%"> is</span><span class="tk h3" title="1.41 nats · the 61% · ␣ 21% · fixed 5%"> the</span><span class="tk h2" title="1.03 nats · upper 69% · maximum 17% · limit 9%"> upper</span><span class="tk h0" title="0.08 nats · limit 99% · bound 1% · number 0%"> limit</span><span class="tk h2" title="0.99 nats · , 58% · . 21% · . 20%">,</span><span class="tk h1" title="0.53 nats · so 85% · which 11% · and 3%"> so</span><span class="tk h6" title="2.83 nats · if 16% · any 12% · the 10%"> the</span><span class="tk h4" title="2.13 nats · digits 27% · number 24% · last 15%"> number</span><span class="tk h5" title="2.27 nats · can 26% · just 17% · after 13%"> can</span><span class="tk h1" title="0.73 nats · 't 82% · be 9% · only 4%">'t</span><span class="tk h3" title="1.39 nats · exceed 39% · go 32% · be 19%"> be</span><span class="tk h2" title="0.98 nats · higher 78% · more 10% · beyond 4%"> higher</span><span class="tk h2" title="0.79 nats · than 75% · . 17% · . 5%"> than</span><span class="tk h0" title="0.20 nats · that 95% · ␣ 5% · this 0%"> that</span><span class="tk h1" title="0.62 nats · . 79% · . 18% · , 3%">.</span><br><br><span class="tk h3" title="1.29 nats · Wait 45% · So 37% · Alternatively 8%">Wait</span><span class="tk h0" title="0.00 nats · , 100% · a 0% · maybe 0%">,</span><span class="tk h4" title="2.15 nats · so 33% · perhaps 19% · maybe 15%"> maybe</span><span class="tk h4" title="2.20 nats · I 41% · if 15% · the 9%"> I</span><span class="tk h1" title="0.60 nats · can 83% · need 13% · should 3%"> can</span><span class="tk h7" title="3.31 nats · have 14% · construct 9% · try 9%"> make</span><span class="tk h1" title="0.51 nats · a 87% · the 10% · ␣ 2%"> a</span><span class="tk h0" title="0.24 nats · number 96% · smaller 1% · seven 1%"> number</span><span class="tk h4" title="2.14 nats · starting 28% · that 21% · like 19%"> where</span><span class="tk h3" title="1.44 nats · the 59% · after 20% · , 4%"> the</span><span class="tk h2" title="1.23 nats · digits 45% · last 41% · first 8%"> last</span><span class="tk h2" title="1.10 nats · digit 51% · few 37% · digits 9%"> digit</span><span class="tk h1" title="0.25 nats · is 94% · isn 5% · doesn 0%"> is</span><span class="tk h4" title="1.80 nats · ␣ 52% · higher 13% · as 12%"> </span><span class="tk h2" title="1.15 nats · 8 43% · 9 39% · 1 15%">8</span><span class="tk h2" title="0.93 nats · , 52% · instead 43% · or 2%">,</span><span class="tk h4" title="2.08 nats · but 32% · instead 29% · so 8%"> but</span><span class="tk h7" title="3.36 nats · that 14% · the 14% · not 10%"> not</span><span class="tk h4" title="2.24 nats · ␣ 39% · necessarily 31% · exceeding 2%"> </span><span class="tk h0" title="0.23 nats · 0 96% · 8 2% · 1 1%">0</span><span class="tk h2" title="1.14 nats · . 56% · , 24% · . 16%">.</span></p>
+          <p class="tk-legend">entropy, nats <span class="tk h0">0</span><span class="tk h2">1</span><span class="tk h4">2</span><span class="tk h6">3</span><span class="tk h8">4</span><span class="tk h10">5</span><span class="tk h12">6</span></p>
+        </div>
+        <figcaption><span class="fig-n">Fig 3</span>Heat away from the answer. In the reply, "work in promoting classical music" runs as hot as a name. In the reasoning trace, the two hottest tokens, <i>not</i> and <i>make</i>, are choices between near-equals; hover them to see the options.</figcaption>
+      </figure>
+
+      <p class="key">Token entropy rises where there is doubt, and also wherever there is more than one way to say something.</p>
+
+      <p>To separate the two, the spread has to be measured in meaning, not in tokens: the entropy of the answer, as defined above.</p>
+    </main>
+
+    <footer class="site-footer">
+      <span>kronos · 2026</span>
+    </footer>
+  </body>
+</html>

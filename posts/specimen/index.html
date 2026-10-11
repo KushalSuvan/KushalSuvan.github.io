@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Where a read request spends its time</title>
+    <meta name="description" content="Follow one read from the browser to the database and back, and see why the slowest hop, not the average one, sets how fast it feels." />
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+    <script>try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}</script>
+    <script type="module" src="/src/main.ts"></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="site-name" href="/">kronos</a>
+      <nav class="site-nav" aria-label="Site">
+        <a href="/">archive</a>
+        <button type="button" data-theme-toggle>dark</button>
+      </nav>
+    </header>
+
+    <main class="post">
+      <header class="post-head">
+        <p class="series">latency, part 1 of 3</p>
+        <h1>Where a read request spends its time</h1>
+        <p class="dek">Follow one read from the browser to the database and back, and see why the slowest hop, not the average one, sets how fast it feels.</p>
+        <p class="meta"><time datetime="2026-10-07">7 Oct 2026</time> · 9 min · 4 figures</p>
+        <figure class="fig hero" id="fig-1">
+          <hl-figure name="gem"></hl-figure>
+          <figcaption><span class="fig-n">Fig 1</span>A request is one small thing that touches many facets of a system. Move across it.</figcaption>
+        </figure>
+      </header>
+
+      <p>A page that loads in 80 milliseconds feels instant; one that loads in 800 feels broken. Between the two there is rarely one slow component. There are five or six hops, each fast on average, and a tail that compounds.<label class="sn-ref" for="sn-1"></label><input type="checkbox" id="sn-1" class="sn-toggle" /><span class="sn">The thresholds are old but hold up: about 100 ms reads as instant, about one second keeps a train of thought, ten seconds loses it.</span></p>
+
+      <p>This post walks one read through a small, ordinary system: a browser, a load balancer, a pool of <code>api</code> servers, a cache, and a database with a replica. Then it looks at two effects that make the average a poor guide: fan-out, and queues near capacity.</p>
+
+      <h2>The path of one read</h2>
+
+      <p>The system lives in one region. Scroll on and the drawing follows the text; use <em>explore</em> to look around it yourself.</p>
+
+      <hl-scrolly scene="request" class="full">
+        <div class="scn-steps">
+          <div class="step" data-view="plan" data-show="client,lb,api,db" data-flow="c-lb,lb-api,api-db" data-read="plan · 4 hops">
+            <p>Seen from above, a read is four hops: the <em>browser</em> to the <em>load balancer</em>, to one of three <em>api</em> servers, to <em>postgres</em>, and back the same way. Each arrow is a network round trip, and each box adds its own work.</p>
+          </div>
+          <div class="step" data-fit="client,lb" data-focus="lb" data-flow="c-lb" data-read="lb · tls">
+            <p>The first hop is the most expensive one we do not control. A new connection pays for a TCP handshake and a TLS handshake before the first byte of the request; a resumed one skips most of that. The load balancer terminates TLS, so this cost ends here.</p>
+          </div>
+          <div class="step" data-fit="api,cache" data-show="client,lb,api,db,cache" data-focus="cache" data-flow="api-cache" data-read="redis · hit">
+            <p>The api server asks <em>redis</em> first. A hit costs a few hundred microseconds inside the region and the database never hears about it. With a hit rate of 95%, the cache decides how most requests feel.</p>
+          </div>
+          <div class="step" data-fit="api,db" data-focus="db" data-flow="api-db" data-read="postgres · miss">
+            <p>A miss goes to <em>postgres</em>. An indexed read of one row is a few milliseconds, most of it waiting on the network and the buffer cache, not on the disk. This is the hop that sets the tail.</p>
+          </div>
+          <div class="step" data-fit="api,db" data-focus="api" data-fail="api-db" data-read="api-db · timeout">
+            <p>When postgres stalls, a vacuum or a lock, the <em>api</em> server waits until its timeout. The request does not fail fast; it fails late, holding a connection the whole time, and the requests behind it queue.</p>
+          </div>
+          <div class="step" data-view="plan" data-show="client,lb,api,db,cache,replica,queue,worker" data-focus="queue" data-flow="api-q,q-worker" data-read="queue · async">
+            <p>Work that the reader does not need to wait for leaves the request entirely. The api puts a message on the <em>orders queue</em> and answers; the <em>email worker</em> picks it up later. The dashed lines are messages nobody waits on.</p>
+          </div>
+        </div>
+      </hl-scrolly>
+      <p class="scn-caption"><span class="fig-n">Fig 2</span>Solid lines wait for an answer, dashed lines do not, dotted lines copy in the background. Drums store, plates cache, slabs queue.</p>
+
+      <p>Put typical numbers on each hop and the budget looks comfortable. These are illustrative, for a warm connection inside one region.</p>
+
+      <div class="table">
+        <table>
+          <thead><tr><th>Hop</th><th class="num">p50 (ms)</th><th class="num">p99 (ms)</th><th>Where the tail comes from</th></tr></thead>
+          <tbody>
+            <tr><td>browser → load balancer</td><td class="num">18</td><td class="num">120</td><td>the reader's network</td></tr>
+            <tr><td>load balancer → api</td><td class="num">0.4</td><td class="num">2</td><td>connection reuse</td></tr>
+            <tr><td>api → redis</td><td class="num">0.3</td><td class="num">1.5</td><td>garbage collection on the api</td></tr>
+            <tr><td>api → postgres</td><td class="num">3</td><td class="num">40</td><td>locks, vacuum, cold pages</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Why the tail is the common case</h2>
+
+      <p>A page is rarely one request. A dashboard that renders ten widgets, or a search that asks a hundred shards, waits for the slowest answer. If each server is slow one time in a hundred, the chance that <em>at least one</em> of <i>N</i> is slow is 1 − 0.99<sup><i>N</i></sup>.</p>
+
+      <figure class="fig wide" id="fig-3">
+        <hl-plot name="fanout"></hl-plot>
+        <figcaption><span class="fig-n">Fig 3</span>At a hundred servers, the p99 of one is the median of the whole: 63% of requests wait for a slow server. The p99.9 still reaches 10%.</figcaption>
+      </figure>
+
+      <p>The usual fixes all cut the dependence on the slowest server: hedge a request to a second replica after the p95, cap how long a fan-out waits, or return partial results.</p>
+
+      <figure class="code" data-file="hedge.ts" data-mark="7-9">
+<pre><code data-lang="ts">// Ask one replica; past its p95, ask a second. First answer wins.
+export async function hedged&lt;T&gt;(
+  call: (replica: number) =&gt; Promise&lt;T&gt;,
+  p95Ms: number,
+): Promise&lt;T&gt; {
+  const first = call(0);
+  const late = new Promise&lt;T&gt;((resolve, reject) =&gt;
+    setTimeout(() =&gt; call(1).then(resolve, reject), p95Ms),
+  );
+  return Promise.race([first, late]);
+}</code></pre>
+      </figure>
+
+      <div class="callout warn">
+        <p>Hedging adds load. At a p95 trigger it sends about 5% more requests; on a system already near capacity that 5% moves it up the curve in the next section.</p>
+      </div>
+
+      <h2>Queues and the knee</h2>
+
+      <p>Every hop above has a queue in front of it: a connection pool, a thread pool, a socket buffer. Queueing theory gives the shape. For one server with random arrivals, the mean time in the system, in multiples of the service time, is</p>
+
+      <p class="eq">W = 1 / (1 − ρ)</p>
+
+      <p>where <i>ρ</i> is utilisation. At 50% load a request takes twice its service time; at 90%, ten times. More servers sharing one queue keep that curve flat for longer, then turn the corner more sharply.<label class="sn-ref" for="sn-2"></label><input type="checkbox" id="sn-2" class="sn-toggle" /><span class="sn">This is the M/M/c model, computed with the Erlang C formula. Real service times are rarely exponential, but the knee is always there.</span></p>
+
+      <figure class="fig wide" id="fig-4">
+        <hl-plot name="queue" live></hl-plot>
+        <figcaption><span class="fig-n">Fig 4</span>Waiting time stays flat until load nears one, then crosses the four-times target. Add servers and watch the knee move right.</figcaption>
+      </figure>
+
+      <p>Read <a class="xref" href="#fig-4">Fig 4</a> as a capacity rule: size a pool so that its busiest hour stays left of the knee. Past it, a small rise in traffic is a large rise in latency, and a hedge or a retry makes it worse.</p>
+
+      <h2>What to measure</h2>
+
+      <ul>
+        <li>Per hop, the p50 and the p99, not the mean. The mean hides the tail that fan-out amplifies.</li>
+        <li>Utilisation of every pool, against the knee in <a class="xref" href="#fig-4">Fig 4</a>.</li>
+        <li>Timeouts per hop, set from that hop's p99.9, so a stalled dependency fails fast instead of late.</li>
+      </ul>
+
+      <p>The next part takes the slowest hop, the database, apart: what a few milliseconds of an indexed read are actually made of.</p>
+
+      <h2>About this page</h2>
+
+      <p>This is the specimen post for the blog's spec. It uses every exhibit type once; the figure below is an explainer figure with a slider, kept here to test the control until a real one replaces it.</p>
+
+      <figure class="fig" id="fig-5">
+        <hl-figure name="stack" control="gap" unit=" u"></hl-figure>
+        <figcaption><span class="fig-n">Fig 5</span>The pointer's height picks a slab and the stack parts around it; the slider sets how far.</figcaption>
+      </figure>
+    </main>
+
+    <footer class="site-footer">
+      <span>kronos · 2026</span>
+    </footer>
+  </body>
+</html>

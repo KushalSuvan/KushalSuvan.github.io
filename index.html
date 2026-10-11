@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>kronos</title>
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+    <script>try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}</script>
+    <script type="module" src="/src/main.ts"></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="site-name" href="/">kronos</a>
+      <nav class="site-nav" aria-label="Site">
+        <button type="button" data-theme-toggle>dark</button>
+      </nav>
+    </header>
+
+    <main class="post">
+      <header class="post-head">
+        <h1>Notes on systems</h1>
+        <p class="dek">How requests move, wait and fail, drawn in lines.</p>
+      </header>
+
+      <ol class="index wide">
+        <li>
+          <a href="/posts/doubt/">
+            <time class="index-date" datetime="2026-10-08">2026-10-08</time>
+            <span class="index-text">
+              <span class="index-title">When is a model in doubt?</span>
+              <span class="index-dek">Two kinds of doubt, a way to measure one of them, and what the entropy of a single token does and does not tell you.</span>
+            </span>
+            <hl-figure class="index-fig" name="doubt" aria-hidden="true"></hl-figure>
+          </a>
+        </li>
+      </ol>
+    </main>
+  </body>
+</html>

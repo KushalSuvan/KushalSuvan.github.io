@@ -1,0 +1,314 @@
+/* Reset, grid, typography, header and footer (spec/02-layout.md, spec/03-typography.md). */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  background: var(--paper);
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 400 1.0625rem/1.65 var(--font-text);
+  font-variant-numeric: oldstyle-nums proportional-nums;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+@media (min-width: 40rem) {
+  body { font-size: 1.125rem; }
+}
+
+:focus-visible {
+  outline: 1.5px solid var(--ink);
+  outline-offset: 2px;
+}
+
+::selection { background: var(--ink-lo); }
+
+figure { margin: 0; }
+
+/* ---------- site header and footer (READ-1) ---------- */
+
+.site-header,
+.site-footer {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-4);
+  max-width: calc(54rem + 2 * var(--gutter));
+  margin: 0 auto;
+  padding: var(--s-5) var(--gutter);
+}
+
+.site-name {
+  font: 600 0.9375rem/1 var(--font-ui);
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.site-nav {
+  display: flex;
+  gap: var(--s-4);
+  align-items: baseline;
+  font: 400 0.75rem/1 var(--font-mono);
+}
+
+.site-nav a,
+.site-nav button {
+  color: var(--ink-2);
+  text-decoration: none;
+  font: inherit;
+  background: none;
+  border: 0;
+  padding: var(--s-1) 0;
+  cursor: pointer;
+  transition: color var(--dur-ui) var(--ease-stroke);
+}
+
+.site-nav a:hover,
+.site-nav button:hover { color: var(--ink); }
+
+.site-footer {
+  margin-top: var(--s-10);
+  border-top: 1px solid var(--ink-lo);
+  font: 400 0.75rem/1.4 var(--font-mono);
+  color: var(--ink-3);
+}
+
+.site-footer a { color: var(--ink-2); }
+
+/* ---------- the grid (LAY-1) ---------- */
+
+.post {
+  display: grid;
+  grid-template-columns:
+    [full-start] minmax(var(--gutter), 1fr)
+    [wide-start] minmax(0, 8rem)
+    [text-start] min(var(--measure), 100% - 2 * var(--gutter))
+    [text-end] minmax(0, 8rem)
+    [wide-end] minmax(var(--gutter), 1fr)
+    [full-end];
+  /* the text track takes its width first; the margins only share what is left,
+     or on a phone they would take two thirds of the column (LAY-1) */
+  padding-bottom: var(--s-9);
+}
+
+.post > * { grid-column: text; margin: 0; min-width: 0; }
+.post > .wide { grid-column: wide; }
+.post > .full { grid-column: full; }
+
+/* ---------- post header (READ-1, READ-2) ---------- */
+
+.post-head { padding-top: var(--s-8); }
+
+.series {
+  font: 400 0.75rem/1.4 var(--font-mono);
+  color: var(--ink-3);
+  margin: 0 0 var(--s-3);
+}
+
+h1 {
+  font: 650 clamp(2rem, 1.3rem + 2.6vw, 3rem)/1.08 var(--font-ui);
+  letter-spacing: -0.022em;
+  text-wrap: balance;
+  margin: 0;
+}
+
+.dek {
+  font-size: 1.1875rem;
+  line-height: 1.45;
+  color: var(--ink-2);
+  margin: var(--s-4) 0 0;
+  text-wrap: pretty;
+}
+
+@media (min-width: 40rem) {
+  .dek { font-size: 1.3125rem; }
+}
+
+.meta {
+  font: 450 0.8125rem/1.4 var(--font-ui);
+  font-variant-numeric: lining-nums tabular-nums;
+  color: var(--ink-3);
+  margin: var(--s-4) 0 0;
+}
+
+.hero { margin-top: var(--s-6); }
+
+/* the hero is an ornament at rest; it leaves the first screen to the title and dek (READ-2) */
+.hero hl-figure { max-width: 26rem; }
+
+/* ---------- prose rhythm (LAY-4) ---------- */
+
+.post > p,
+.post > ul,
+.post > ol,
+.post > blockquote { margin-top: 1.1em; text-wrap: pretty; }
+
+.post > .post-head + * { margin-top: var(--s-7); }
+
+@media (max-width: 39.99rem) {
+  .post > p { hyphens: auto; }
+}
+
+.post > h2 {
+  font: 600 1.375rem/1.25 var(--font-ui);
+  letter-spacing: -0.012em;
+  margin-top: var(--s-7);
+  text-wrap: balance;
+}
+
+@media (min-width: 40rem) {
+  .post > h2 { font-size: 1.5rem; }
+}
+
+.post > h3 {
+  font: 600 1.1875rem/1.35 var(--font-ui);
+  margin-top: 2em;
+}
+
+.post > h2 + *,
+.post > h3 + * { margin-top: 0.6em; }
+
+.post > .full + h2 { margin-top: var(--s-8); }
+
+h2, h3 { position: relative; scroll-margin-top: var(--s-6); }
+
+.anchor {
+  position: absolute;
+  right: 100%;
+  padding-right: 0.4em;
+  color: var(--ink-3);
+  text-decoration: none;
+  font-weight: 400;
+  opacity: 0;
+  transition: opacity var(--dur-ui) var(--ease-stroke);
+}
+
+h2:hover .anchor,
+h3:hover .anchor,
+.anchor:focus-visible { opacity: 1; }
+
+.post ul,
+.post ol { padding-left: 1.25em; }
+
+.post li + li { margin-top: 0.35em; }
+
+.post li::marker { color: var(--ink-3); }
+
+blockquote {
+  border-left: 1px solid var(--ink-mid);
+  padding-left: var(--s-4);
+  color: var(--ink-2);
+  font-style: italic;
+}
+
+/* ---------- links and emphasis (TYPE-5, TYPE-6) ---------- */
+
+a {
+  color: inherit;
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  text-decoration-color: var(--ink-mid);
+  transition: text-decoration-color var(--dur-ui) var(--ease-stroke);
+}
+
+a:hover,
+a:focus-visible { text-decoration-color: var(--ink); }
+
+em, dfn { font-style: italic; }
+
+strong { font-weight: 600; }
+
+/* ---------- numerals (TYPE-3) ---------- */
+
+.tnum,
+table,
+.readout { font-variant-numeric: lining-nums tabular-nums; }
+
+/* ---------- visually hidden ---------- */
+
+.vh {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---------- table of contents (READ-3) ---------- */
+
+.toc { display: none; }
+
+/* the contents live left of the wide column, never over it, so they need 85rem (READ-3) */
+@media (min-width: 85rem) {
+  .toc {
+    display: block;
+    position: fixed;
+    top: var(--s-10);
+    left: calc(50% - var(--measure) / 2 - 8rem - 12rem);
+    width: 11rem;
+    font: 400 0.8125rem/1.4 var(--font-ui);
+  }
+
+  .toc ol { list-style: none; margin: 0; padding: 0; }
+  .toc li + li { margin-top: var(--s-2); }
+
+  .toc a {
+    display: block;
+    padding-left: var(--s-3);
+    border-left: 1px solid transparent;
+    color: var(--ink-3);
+    text-decoration: none;
+    transition: color var(--dur-ui) var(--ease-stroke), border-color var(--dur-ui) var(--ease-stroke);
+  }
+
+  .toc a:hover { color: var(--ink-2); }
+  .toc a[aria-current="true"] { color: var(--ink); border-left-color: var(--ink); }
+
+  .toc.hidden { visibility: hidden; }
+}
+
+/* ---------- the index (READ-4) ---------- */
+
+.index { list-style: none; padding: 0; margin-top: var(--s-7); }
+.index li + li { margin-top: 0; }
+
+.index a {
+  display: grid;
+  grid-template-columns: 6.5rem 1fr 10rem;
+  gap: var(--s-5);
+  align-items: center;
+  padding: var(--s-5) 0;
+  border-top: 1px solid var(--ink-lo);
+  text-decoration: none;
+}
+
+.index-date {
+  font: 400 0.75rem/1.4 var(--font-mono);
+  color: var(--ink-3);
+  font-variant-numeric: lining-nums tabular-nums;
+  align-self: start;
+  padding-top: 0.3em;
+}
+
+.index-title { display: block; font: 600 1.1875rem/1.3 var(--font-ui); letter-spacing: -0.01em; }
+.index-dek { display: block; margin-top: var(--s-2); color: var(--ink-2); font-size: 1rem; line-height: 1.5; }
+.index-fig { width: 10rem; }
+.index a:hover .index-title { text-decoration: underline 1px var(--ink-mid); text-underline-offset: 0.2em; }
+
+@media (max-width: 39.99rem) {
+  .index a { grid-template-columns: 1fr; gap: var(--s-2); }
+  .index-fig { display: none; }
+}
+/* at 160px a thumbnail keeps its drawing and drops its words: the read-out, and any text layer (FIG-7) */
+.index-fig .readout,
+.index-fig .fig-text { display: none; }
