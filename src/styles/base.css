@@ -322,3 +322,20 @@ table,
 /* at 160px a thumbnail keeps its drawing and drops its words: the read-out, and any text layer (FIG-7) */
 .index-fig .readout,
 .index-fig .fig-text { display: none; }
+
+/* ---------- series navigation, at the end of a post (READ-1) ---------- */
+
+.post > .series-nav {
+  margin-top: var(--s-8);
+  padding-top: var(--s-4);
+  border-top: 1px solid var(--ink-lo);
+  display: flex;
+  justify-content: space-between;
+  gap: var(--s-4);
+  font: 400 0.875rem/1.45 var(--font-ui);
+}
+
+.series-nav a { color: var(--ink-2); text-decoration: none; }
+.series-nav a:hover { color: var(--ink); }
+.series-nav .next { margin-left: auto; text-align: right; }
+

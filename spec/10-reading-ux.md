@@ -7,7 +7,7 @@ In this order, nothing else:
 1. Site header: the site name (sans 600, links home), and on the right `archive`, `rss` and the theme toggle, mono 12px. Not sticky.
 2. Post header in `text`: the series (mono 12px `--ink-3`, `series · part 2 of 4`, only if part of one), the title (`h1`), the dek (one sentence, what the reader will understand by the end), the meta line (`7 Oct 2026 · 14 min · 3 figures`), then the hero figure (`FIG-5`): an ornament, or the post's main explainer when the whole post is about one mechanism. A hero explainer may carry its slider.
 3. The body.
-4. The end: a `--ink-lo` rule, the series navigation if any (previous / next as titles), "Notes" with any footnotes that could not be sidenotes, and the reply line (`mail · rss`).
+4. The end: a `--ink-lo` rule, the series navigation if any (`nav.series-nav`: `← part n: Title` on the left, `part n: Title →` with class `next` on the right), "Notes" with any footnotes that could not be sidenotes, and the reply line (`mail · rss`).
 
 - **Rejected when:** the header carries tags, author photos, share buttons or a newsletter box; anything interrupts the body (no inline promos).
 

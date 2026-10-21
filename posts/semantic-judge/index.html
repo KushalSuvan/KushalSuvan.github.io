@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Who judges meaning?</title>
+    <meta name="description" content="Semantic entropy needs a judge of when two answers mean the same thing. Today that judge sits outside the model. We want it inside." />
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+    <link rel="alternate" type="application/rss+xml" title="kronos" href="/rss.xml" />
+    <script>try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}</script>
+    <script type="module" src="/src/main.ts"></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="site-name" href="/">kronos</a>
+      <nav class="site-nav" aria-label="Site">
+        <a href="/">archive</a>
+        <a href="/rss.xml">rss</a>
+        <button type="button" data-theme-toggle>dark</button>
+      </nav>
+    </header>
+
+    <main class="post">
+      <header class="post-head">
+        <p class="series">doubt, part 2 · log</p>
+        <h1>Who judges meaning?</h1>
+        <p class="dek">Semantic entropy needs a judge of when two answers mean the same thing. Today that judge sits outside the model. We want it inside.</p>
+        <p class="meta"><time datetime="2026-10-20">20 Oct 2026</time> · 3 min</p>
+      </header>
+
+      <p><a href="/posts/doubt/">Part 1</a> ended on a distinction. The entropy of the next token measures doubt about <em>wording</em>: it runs high wherever a sentence can go on in several equivalent ways. The doubt we want is about <em>meaning</em>.</p>
+
+      <figure class="fig" id="fig-1">
+        <div class="tokens">
+          <p class="tk-model">deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B</p>
+          <p class="tk-a tk-passage"><span class="tk h1" title="0.66 nats · Wait 77% · But 20% · So 2%">Wait</span><span class="tk h0" title="0.00 nats · , 100% · . 0% · but 0%">,</span><span class="tk h4" title="1.84 nats · but 48% · let 16% · for 12%"> but</span><span class="tk h5" title="2.37 nats · ␣ 37% · the 21% · let 6%"> </span><span class="tk h0" title="0.01 nats · 4 100% · 7 0% · 6 0%">4</span><span class="tk h1" title="0.64 nats · , 68% · 7 32% · million 0%">,</span><span class="tk h0" title="0.00 nats · 7 100% · 6 0% · ␣ 0%">7</span><span class="tk h1" title="0.29 nats · 6 92% · , 8% · is 0%">6</span><span class="tk h0" title="0.00 nats · 3 100% · , 0% · 4 0%">3</span><span class="tk h0" title="0.02 nats · , 100% · is 0% · 1 0%">,</span><span class="tk h0" title="0.06 nats · 1 99% · xxx 0% · 0 0%">1</span><span class="tk h1" title="0.44 nats · 0 93% · X 1% · xx 1%">0</span><span class="tk h1" title="0.33 nats · 8 92% · 0 8% · 1 0%">8</span><span class="tk h0" title="0.18 nats · is 97% · ends 1% · has 1%"> is</span><span class="tk h3" title="1.41 nats · the 61% · ␣ 21% · fixed 5%"> the</span><span class="tk h2" title="1.03 nats · upper 69% · maximum 17% · limit 9%"> upper</span><span class="tk h0" title="0.08 nats · limit 99% · bound 1% · number 0%"> limit</span><span class="tk h2" title="0.99 nats · , 58% · . 21% · . 20%">,</span><span class="tk h1" title="0.53 nats · so 85% · which 11% · and 3%"> so</span><span class="tk h6" title="2.83 nats · if 16% · any 12% · the 10%"> the</span><span class="tk h4" title="2.13 nats · digits 27% · number 24% · last 15%"> number</span><span class="tk h5" title="2.27 nats · can 26% · just 17% · after 13%"> can</span><span class="tk h1" title="0.73 nats · 't 82% · be 9% · only 4%">'t</span><span class="tk h3" title="1.39 nats · exceed 39% · go 32% · be 19%"> be</span><span class="tk h2" title="0.98 nats · higher 78% · more 10% · beyond 4%"> higher</span><span class="tk h2" title="0.79 nats · than 75% · . 17% · . 5%"> than</span><span class="tk h0" title="0.20 nats · that 95% · ␣ 5% · this 0%"> that</span><span class="tk h1" title="0.62 nats · . 79% · . 18% · , 3%">.</span><br><br><span class="tk h3" title="1.29 nats · Wait 45% · So 37% · Alternatively 8%">Wait</span><span class="tk h0" title="0.00 nats · , 100% · a 0% · maybe 0%">,</span><span class="tk h4" title="2.15 nats · so 33% · perhaps 19% · maybe 15%"> maybe</span><span class="tk h4" title="2.20 nats · I 41% · if 15% · the 9%"> I</span><span class="tk h1" title="0.60 nats · can 83% · need 13% · should 3%"> can</span><span class="tk h7" title="3.31 nats · have 14% · construct 9% · try 9%"> make</span><span class="tk h1" title="0.51 nats · a 87% · the 10% · ␣ 2%"> a</span><span class="tk h0" title="0.24 nats · number 96% · smaller 1% · seven 1%"> number</span><span class="tk h4" title="2.14 nats · starting 28% · that 21% · like 19%"> where</span><span class="tk h3" title="1.44 nats · the 59% · after 20% · , 4%"> the</span><span class="tk h2" title="1.23 nats · digits 45% · last 41% · first 8%"> last</span><span class="tk h2" title="1.10 nats · digit 51% · few 37% · digits 9%"> digit</span><span class="tk h1" title="0.25 nats · is 94% · isn 5% · doesn 0%"> is</span><span class="tk h4" title="1.80 nats · ␣ 52% · higher 13% · as 12%"> </span><span class="tk h2" title="1.15 nats · 8 43% · 9 39% · 1 15%">8</span><span class="tk h2" title="0.93 nats · , 52% · instead 43% · or 2%">,</span><span class="tk h4" title="2.08 nats · but 32% · instead 29% · so 8%"> but</span><span class="tk h7" title="3.36 nats · that 14% · the 14% · not 10%"> not</span><span class="tk h4" title="2.24 nats · ␣ 39% · necessarily 31% · exceeding 2%"> </span><span class="tk h0" title="0.23 nats · 0 96% · 8 2% · 1 1%">0</span><span class="tk h2" title="1.14 nats · . 56% · , 24% · . 16%">.</span></p>
+          <p class="tk-legend">entropy, nats <span class="tk h0">0</span><span class="tk h2">1</span><span class="tk h4">2</span><span class="tk h6">3</span><span class="tk h8">4</span><span class="tk h10">5</span><span class="tk h12">6</span></p>
+        </div>
+        <figcaption><span class="fig-n">Fig 1</span>From part 1: after <i>Wait, maybe I can</i>, the probability splits between <i>have</i>, <i>construct</i> and <i>try</i>. High entropy, one meaning. Hover <i>make</i> to see the split.</figcaption>
+      </figure>
+
+      <h2>Semantic entropy</h2>
+
+      <p>The measure for doubt about meaning already exists: <dfn>semantic entropy</dfn> (Kuhn, Gal and Farquhar, 2023). Sample several answers to the same question. Group the ones that mean the same thing. Take the entropy over the groups instead of over the tokens. Ten wordings of one answer make one group, and no doubt; three different answers make three groups, and real doubt.</p>
+
+      <p>Everything rests on the grouping, and the grouping rests on one test: do two answers mean the same?</p>
+
+      <h2>Why the test is bidirectional</h2>
+
+      <p>The test comes from natural language inference. An NLI model reads a premise and a hypothesis and decides whether the first <dfn>entails</dfn> the second. Entailment runs one way. <i>Paris</i> entails <i>a city in France</i>; <i>a city in France</i> does not entail <i>Paris</i>.</p>
+
+      <p>So the test is run both ways. If each answer entails the other, neither says more than the other, and in logic that is equivalence:</p>
+
+      <p class="eq">(A ⇒ B) ∧ (B ⇒ A) ≡ (A ⇔ B)</p>
+
+      <p><i>Paris</i> and <i>the capital is Paris</i> pass in both directions and share a group. <i>Paris</i> and <i>a city in France</i> pass in one and stay apart.</p>
+
+      <h2>The judge sits outside</h2>
+
+      <p>In the original method the test is run by a separate model, an NLI classifier; the 2024 follow-up in <i>Nature</i> also used a prompted language model. Either way, a second model reads the first one's samples and decides which of them mean the same.</p>
+
+      <p class="key">The doubt is the model's, but the judgement of what its answers mean belongs to someone else.</p>
+
+      <h2>Where we are</h2>
+
+      <p>That is the current state of the work: moving the judge inside. The model that wrote the answers should be the one that decides when two of them are equivalent. This log records the problem as it stands; the approach and results come in the next part.</p>
+
+      <nav class="series-nav" aria-label="Series">
+        <a href="/posts/doubt/">← part 1: When is a model in doubt?</a>
+      </nav>
+    </main>
+
+    <footer class="site-footer">
+      <span>kronos · 2026</span>
+    </footer>
+  </body>
+</html>
